@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8">
-    <title>Nom du produit</title>
+    <title></title>
     <meta name="description" content="Plateforme incroyable de e-commerce">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,16 +71,18 @@
 
                 <div class="item__content__settings__quantity">
                   <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                  <input type="number" name="itemQuantity" min="1" max="100" value="1" id="quantity">
+                  <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
                 </div>
               </div>
 
               <div class="item__content__addButton">
                 <button id="addToCart">Ajouter au panier</button>
               </div>
-
+              <div class="item__message__error"></div>
+              <div class="item__confirmation"></div>
             </div>
           </article>
+          
         </section>
       </div>
     </main>

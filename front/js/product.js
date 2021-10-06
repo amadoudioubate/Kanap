@@ -1,6 +1,7 @@
 const item = document.querySelector('.item')
 
 const buttonaddToCartItem = document.getElementById('addToCart');
+const itemMessageError = document.querySelector(".item__message__error");
 
 const displayProduct = product => {
     let option = "";
@@ -20,8 +21,7 @@ const displayProduct = product => {
     product.colors.forEach(colors => {
         option +=`<option value="${colors}">${colors}</option>`;
     });
-    colorsSelectEltItem.innerHTML =  option; 
-    console.log(option);       
+    colorsSelectEltItem.innerHTML = option;        
 }
 
 //Fonction pour afficher le message d'erreur si le fetch se passe mal 
@@ -41,6 +41,8 @@ if(searchParams.has('id')){
     fetch(`http://localhost:3000/api/products/${idProduct}`)
         .then(response => response.json())
         .then(data => {
+            //Affichage dynamique du nom de produit
+            document.title = data.name;
             //Appel de la fonction displayProduct
             displayProduct(data);
             //On écoute le bouton ajouter au panier
@@ -48,24 +50,33 @@ if(searchParams.has('id')){
                 event.preventDefault();
                  
                 let quantity = document.getElementById('quantity').value; 
-                
-                let products = {
-                    id: data._id,
-                    name: data.name,
-                    colorSelected: document.getElementById('colors').value,
-                    quantity: quantity,
-                    price: data.price,
-                    totalPrice: data.price * quantity
-                };
-                let productItemInLocalStorage = JSON.parse(localStorage.getItem(products.id + products.colorSelected));
-                console.log(productItemInLocalStorage);
-                if(productItemInLocalStorage !== null){
-                    products.quantity = parseInt(products.quantity) + parseInt(productItemInLocalStorage.quantity);
-                    products.totalPrice = products.price * products.quantity;
-                    localStorage.setItem(products.id + products.colorSelected, JSON.stringify(products));
+                if(quantity >0 && quantity <=100){
+                    let products = {
+                        id: data._id,
+                        name: data.name,
+                        imageUrl: data.imageUrl,
+                        altTxt: data.altTxt,
+                        colorSelected: document.getElementById('colors').value,
+                        quantity: quantity,
+                        price: data.price,
+                        totalPrice: data.price * quantity
+                    };
+            
+                    let productItemInLocalStorage = JSON.parse(localStorage.getItem(products.id + products.colorSelected));
+                    if(productItemInLocalStorage !== null){
+                        products.quantity = parseInt(products.quantity) + parseInt(productItemInLocalStorage.quantity);
+                        products.totalPrice = products.price * products.quantity;
+                        localStorage.setItem(products.id + products.colorSelected, JSON.stringify(products));
+                        
+                    }else{
+                        localStorage.setItem(products.id + products.colorSelected, JSON.stringify(products));
+                    }
+                    //let itemConfirmation = querySelector(".item__confirmation");
+                    itemMessageError.style = "display:none";
                     
                 }else{
-                    localStorage.setItem(products.id + products.colorSelected, JSON.stringify(products));
+                    itemMessageError.innerHTML = "La quantité doit être comprise entre 1-100";
+                    itemMessageError.style = "display:flex;justify-content:center;align-items:center";
                 }
             })
         })
